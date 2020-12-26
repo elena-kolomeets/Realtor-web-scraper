@@ -1,6 +1,10 @@
 import ast
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from getpass import getpass
 import json
 from datetime import date
+import smtplib, ssl
 import time
 import pandas
 import requests
@@ -100,7 +104,57 @@ def save_files(df):
 
 
 def send_email(df):
-    pass
+    sender_email = 'realtorcawebscraper@gmail.com'
+    # sender_email = input('Enter sender email address: ')
+    sender_pass = getpass('Enter sender email password: ')
+    receiver_email = 'kolomeets.elena7@gmail.com'
+    # receiver_email = input('Enter receiver email address: ')
+    message = MIMEMultipart('alternative')
+    message['Subject'] = 'Your realtor.ca search results'
+    message['From'] = sender_email
+    message['To'] = receiver_email
+
+    # Create the plain-text and HTML version of the message
+    text = """\
+    Hi,
+    
+    Here should be fresh real estate search results from https://www.realtor.ca.
+    If you do not see them, your email client does not display HTML content by default.   
+    You can turn it on or use the .html or .xlsx files created with the same results!
+    
+    Enjoy!
+    Elena Kolomeets
+    https://github.com/elena-kolomeets"""
+
+    # add results table to the end of html
+    html = """\
+    <html>
+      <body>
+        <p>Hi,</br>
+           Here are fresh real estate search results from <a href="https://www.realtor.ca" target="_blank">Realtor Canada</a> 
+           </br>
+           Enjoy!</br>
+           (Made by <a href="https://github.com/elena-kolomeets" target="_blank">Elena Kolomeets</a>)
+        </p>
+      </body>
+    </html>
+    """+'\n'+df.to_html(justify='center', index_names=False, render_links=True)
+
+    # Turn these into plain/html MIMEText objects and add to MIMEMultipart message
+    message.attach(MIMEText(text, 'plain'))
+    message.attach(MIMEText(html, 'html'))
+
+    # Create secure connection with server and send email
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
+        try:
+            server.login(sender_email, sender_pass)
+        except:
+            print('Could not login in the sender email')
+        try:
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        except:
+            print('Could not send an email to '+receiver_email)
 
 
 def main():
