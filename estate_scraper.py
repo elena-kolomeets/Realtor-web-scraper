@@ -6,16 +6,6 @@ import pandas
 import requests
 
 
-# def check(func):
-#     """
-#     decorator that will check when the request is made
-#     and will not allow to repeat it for next 5 minutes
-#     """
-#     @functools.wraps(func)
-#     def wrapper_check(*args, **kwargs):
-#         now = datetime.now()
-
-
 def send_request():
     # put data in txt file and load from it (for flexible search)
     """Send request to realtor.ca to get a list of apartments with set characteristics"""
@@ -39,31 +29,23 @@ def send_request():
                 'Currency': 'CAD',
                 'CultureId': '1',
                 'ApplicationId': '37'}
-    print(type(data))
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
               'Chrome/87.0.4280.88 Safari/537.36'}
     # get the contents of page 1 to get total number of records
-
-    # response = requests.post(url=url, data=data, headers=headers)
-    # extract = json.loads(response.text)
-
+    response = requests.post(url=url, data=data, headers=headers)
+    extract = json.loads(response.text)
     # get total number of records to make another request
     # with all records on one page
-
-    # records = extract['Paging']['TotalRecords']
-    # data['RecordsPerPage'] = records
-
-    # sleep for 1 minute before sending the next request
-
-    # time.sleep(60)
-
+    records = extract['Paging']['TotalRecords']
+    data['RecordsPerPage'] = records
+    # sleep for 10 seconds before sending the next request
+    time.sleep(10)
     # make second request to get all records
+    response = requests.post(url=url, data=data, headers=headers)
+    extract = json.loads(response.text)
 
-    # response = requests.post(url=url, data=data, headers=headers)
-    # extract = json.loads(response.text)
-
-    with open("realtor_data.txt", mode='r', encoding='utf-8') as file1:
-        extract = ast.literal_eval(file1.read())
+    # with open("realtor_data.txt", mode='r', encoding='utf-8') as file1:
+    #     extract = ast.literal_eval(file1.read())
 
     return extract
 
