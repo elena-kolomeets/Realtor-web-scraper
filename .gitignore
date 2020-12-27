@@ -1,2 +1,7 @@
 .idea/
+build/
+dist/
+**.spec
+__pycache__/
 email_credentials.txt
+realtor_data.txt

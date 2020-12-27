@@ -8,8 +8,10 @@
 'TransactionTypeId': '3',
 'RentMin': '2000',
 'RentMax': '2300',
-'BedRange': '1-1',
+'BedRange': '1-0',
 'BuildingTypeId': '17',
+'Keywords': 'balcony',
 'Currency': 'CAD',
+'RecordsPerPage': '50',
 'CultureId': '1',
 'ApplicationId': '37'}
