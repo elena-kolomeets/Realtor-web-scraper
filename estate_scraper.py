@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import json
 from datetime import date
+from getpass import getpass
 import smtplib
 import ssl
 import pandas
@@ -110,7 +111,9 @@ def send_email(df):
                 sender_pass = file2.readline().strip()
                 receiver_email = file2.readline().strip()
         except:
-            print('No file with email credentials.')
+            sender_email = input('Enter sender email address: ')
+            sender_pass = getpass('Enter sender email password (it will be hidden): ')
+            receiver_email = input('Enter receiver email address: ')
         message = MIMEMultipart('alternative')
         message['Subject'] = 'Your realtor.ca search results '+str(date.today())
         message['From'] = sender_email
